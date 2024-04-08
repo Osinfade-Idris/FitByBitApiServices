@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EfCoreCommonOptions">
+    <option name="solutionLevelOptions">
+      <map>
+        <entry key="migrationsProject" value="1fc28e90-8710-4b2f-b73a-8c44bae3ab05" />
+        <entry key="startupProject" value="1fc28e90-8710-4b2f-b73a-8c44bae3ab05" />
+      </map>
+    </option>
+  </component>
+</project>
