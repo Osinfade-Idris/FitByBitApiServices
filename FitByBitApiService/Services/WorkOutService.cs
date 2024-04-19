@@ -125,6 +125,119 @@ public class WorkOutService : IWorkOutRepository
         }
     }
 
+    public async Task<GenericResponse<IEnumerable<AllWorkoutDto>>> GetAllWorkoutsAsync(WorkoutSearchParameters searchParameters = null)
+    {
+        try
+        {
+            // Fetch all workouts from the database
+            var workouts = await _dbContext.WorkoutPrograms.ToListAsync();
+
+            // If search parameters are provided, filter the workouts
+            if (searchParameters != null && (searchParameters.FitnessLevel != null || searchParameters.Category != null))
+            {
+                workouts = workouts.Where(w =>
+                    (searchParameters.FitnessLevel == null || w.ExpertiseLevel == searchParameters.FitnessLevel) &&
+                    (searchParameters.Category == null || w.Category == searchParameters.Category)
+                ).ToList();
+            }
+
+            // Extract exercise names from workouts
+            var exerciseNames = workouts.Select(w => w.ExerciseName).ToList();
+
+            // Create a list to store AllWorkoutDto objects
+            var allWorkoutDtos = new List<AllWorkoutDto>();
+
+            // Iterate through each workout
+            foreach (var workout in workouts)
+            {
+                // Fetch exercises for the workout
+                var exercises = GetExercisesForWorkouts(exerciseNames);
+
+                // Group exercises by their workout names and order them by number within each group
+                var groupedExercises = exercises
+                    .GroupBy(e => e.Name)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => group.OrderBy(e => int.Parse(e.Number)).ToList()
+                    );
+
+                // Create an AllWorkoutDto object for the current workout
+                var allWorkoutDto = new AllWorkoutDto
+                {
+                    ExerciseName = workout.ExerciseName,
+                    Category = workout.Category,
+                    ExpertiseLevel = workout.ExpertiseLevel,
+                    Exercises = groupedExercises
+                };
+
+                allWorkoutDtos.Add(allWorkoutDto);
+            }
+
+            return new GenericResponse<IEnumerable<AllWorkoutDto>>()
+            {
+                Success = true,
+                Message = "Success",
+                Data = allWorkoutDtos,
+                StatusCode = HttpStatusCode.OK
+            };
+        }
+        catch (Exception exception)
+        {
+            _logger.LogInformation($"\n------ {exception.Message} | {_dateTime} -------\n");
+            throw new FitByBitServiceUnavailableException($"{exception.Message}: service unavailable.",
+                HttpStatusCode.InternalServerError.ToString());
+        }
+    }
+
+    public async Task<GenericResponse<AllWorkoutDto>> GetWorkoutByIdAsync(Guid id)
+    {
+        try
+        {
+            // Fetch the workout from the database by ID
+            var workout = await _dbContext.WorkoutPrograms.FirstOrDefaultAsync(w => w.Id == id);
+
+            if (workout == null)
+            {
+                throw new FitByBitNotFoundException($"Workout with ID {id} not found", HttpStatusCode.NotFound.ToString());
+            }
+
+            // Fetch exercises for the workout directly from the database
+            var exercises = await _dbContext.Exercises
+                .Where(e => workout.ExerciseName.Contains(e.Name))
+                .ToListAsync();
+
+            // Group exercises by their workout names and order them by number within each group
+            var groupedExercises = exercises
+                .GroupBy(e => e.Name)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group.OrderBy(e => int.Parse(e.Number)).ToList()
+                );
+
+            // Create an AllWorkoutDto object for the current workout
+            var allWorkoutDto = new AllWorkoutDto
+            {
+                ExerciseName = workout.ExerciseName,
+                Category = workout.Category,
+                ExpertiseLevel = workout.ExpertiseLevel,
+                Exercises = groupedExercises
+            };
+
+            return new GenericResponse<AllWorkoutDto>()
+            {
+                Success = true,
+                Message = "Success",
+                Data = allWorkoutDto,
+                StatusCode = HttpStatusCode.OK
+            };
+        }
+        catch (Exception exception)
+        {
+            _logger.LogInformation($"\n------ {exception.Message} | {_dateTime} -------\n");
+            throw new FitByBitServiceUnavailableException($"{exception.Message}: service unavailable.",
+                HttpStatusCode.InternalServerError.ToString());
+        }
+    }
 
     private List<Exercise> GetExercisesForWorkouts(List<string> exerciseNames)
     {
@@ -142,7 +255,6 @@ public class WorkOutService : IWorkOutRepository
             throw;
         }
     }
-
 
     private List<WorkoutProgram> GetWorkoutsForUser(FitnessGoal fitnessGoal, CurrentFitnessLevel fitnessLevel)
     {

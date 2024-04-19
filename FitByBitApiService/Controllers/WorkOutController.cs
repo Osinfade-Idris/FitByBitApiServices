@@ -29,12 +29,40 @@ public class WorkOutController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(GenericResponse<>))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(GenericResponse<>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(GenericResponse<>))]
-    [SwaggerOperation(Summary = "Get user work out by id.")]
-    public async Task<ActionResult<GenericResponse<UserWorkOutDto>>> GetUserWorkOutById()
+    [SwaggerOperation(Summary = "Get user work out.")]
+    public async Task<ActionResult<GenericResponse<UserWorkOutDto>>> GetUserWorkOut()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         var response = await _workOutRepository.GetUserWorkOutByIdAsync(userId);
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+    [Authorize]
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenericResponse<AllWorkoutDto>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(GenericResponse<>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(GenericResponse<>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(GenericResponse<>))]
+    [SwaggerOperation(Summary = "Get all workouts.")]
+    public async Task<ActionResult<GenericResponse<AllWorkoutDto>>> GetAllWorkOuts([FromQuery] WorkoutSearchParameters searchParameters = null)
+    {
+
+        var response = await _workOutRepository.GetAllWorkoutsAsync(searchParameters);
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+    [Authorize]
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenericResponse<AllWorkoutDto>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(GenericResponse<>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(GenericResponse<>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(GenericResponse<>))]
+    [SwaggerOperation(Summary = "Get workout by id.")]
+    public async Task<ActionResult<GenericResponse<AllWorkoutDto>>> GetWorkOutById(Guid id)
+    {
+
+        var response = await _workOutRepository.GetWorkoutByIdAsync(id);
         return StatusCode((int)response.StatusCode, response);
     }
 }

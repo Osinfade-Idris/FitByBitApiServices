@@ -27,3 +27,18 @@ public class WorkoutDto
     public FitnessGoal Category { get; set; } // Fitness goal category
     public CurrentFitnessLevel ExpertiseLevel { get; set; } // Expertise level
 }
+
+public class AllWorkoutDto
+{
+    public string ExerciseName { get; set; } // Name of the exercise
+    public FitnessGoal Category { get; set; } // Fitness goal category
+    public CurrentFitnessLevel ExpertiseLevel { get; set; } // Expertise level
+    public object Exercises { get; internal set; }
+}
+
+
+public class WorkoutSearchParameters
+{
+    public CurrentFitnessLevel? FitnessLevel { get; set; }
+    public FitnessGoal? Category { get; set; }
+}
