@@ -27,4 +27,6 @@ public class UserDto: BaseEntity
 
     public double StartingWeight { get; set; }
     public double TargetWeight { get; set; }
+    public double Height { get; set; }
+    public double Bmi { get; set; }
 }

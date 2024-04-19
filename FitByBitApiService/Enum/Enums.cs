@@ -32,3 +32,11 @@ public enum FoodGroup
     Fish = 4,
     Fruits = 5
 }
+
+public enum MealType
+{
+    Unknown = 0,
+    Breakfast = 1,
+    Lunch = 2,
+    Dinner = 3
+}

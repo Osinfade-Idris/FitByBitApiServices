@@ -215,4 +215,6 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<Meal> Meals { get; set; }
     public DbSet<WorkoutProgram> WorkoutPrograms { get; set; }
     public DbSet<Exercise> Exercises { get; set; }
+    public DbSet<MealPlan> MealPlans { get; set; }
+    public DbSet<WorkOutPlan> WorkoutPlans { get; set; }
 }

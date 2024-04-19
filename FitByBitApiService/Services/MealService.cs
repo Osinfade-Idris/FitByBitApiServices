@@ -1,13 +1,18 @@
+using System;
 using System.Net;
 using AutoMapper;
+using FitByBitApiService.Entities.Models;
 using FitByBitService.Data;
 using FitByBitService.Entities.Models;
+using FitByBitService.Entities.Responses;
 using FitByBitService.Entities.Responses.MealResponse;
 using FitByBitService.Enum;
+using FitByBitService.Exceptions;
 using FitByBitService.Helpers;
 using FitByBitService.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using IGenerateOtpHandler = FitByBitService.Handlers.IGenerateOtpHandler;
 
@@ -35,6 +40,52 @@ public class MealService : IMealRepository
         _userManager = userManager;
         _logger = logger;
         _dbContext = dbContext;
+    }
+
+    [HttpPost]
+    public async Task<GenericResponse<MealPlan>> CreateMealPlan([FromBody] IEnumerable<MealPlanDataDto> mealPlanDataList, string userId)
+    {
+        try
+        {
+            // Check for duplicate meal types within the provided meal plans
+            var mealTypeCounts = new Dictionary<MealType, int>();
+            foreach (var mealPlan in mealPlanDataList)
+            {
+                if (!mealTypeCounts.ContainsKey(mealPlan.MealType))
+                {
+                    mealTypeCounts[mealPlan.MealType] = 1;
+                }
+                else
+                {
+                    mealTypeCounts[mealPlan.MealType]++;
+                }
+            }
+
+            foreach (var count in mealTypeCounts)
+            {
+                if (count.Value != 1)
+                {
+                    throw new Exception($"Duplicate meal type {count.Key} found.");
+                }
+            }
+
+            foreach (var mealPlanData in mealPlanDataList)
+            {
+                ValidateMealIds(mealPlanData.MealIds, mealPlanData.MealType);
+                CreateMealPlanForMeals(mealPlanData.MealIds, mealPlanData.MealType, mealPlanData.Date, userId);
+            }
+
+            return new GenericResponse<MealPlan>()
+            {
+                Success = true,
+                Message = "Meal plan created successfully.",
+                StatusCode = HttpStatusCode.OK
+            };
+        }
+        catch (Exception ex)
+        {
+            throw new FitByBitServiceUnavailableException($"{ex.Message}: service unavailable.");
+        }
     }
 
     public async Task<GenericResponse<List<FoodGroupDto>>> GetAllFoodGroupsAsync()
@@ -128,6 +179,45 @@ public class MealService : IMealRepository
 
     }
 
+    public async Task<GenericResponse<List<UserMealPlanViewModel>>> GetMealPlansGroupedByUserIdAndDate(string userId)
+    {
+        var mealPlans = _dbContext.MealPlans.Where(mp => mp.UserId == userId).ToList();
+
+        // Group meal plans by userId
+        var groupedMealPlans = mealPlans.GroupBy(mp => mp.UserId)
+            .Select(g => new UserMealPlanViewModel
+            {
+                UserId = userId,
+                MealPlans = g.OrderBy(mp => mp.Date)
+                            .GroupBy(mp => mp.Date.Date)
+                            .Select(gg => new UserMealPlanDateViewModel
+                            {
+                                Date = gg.Key,
+                                Meals = gg.GroupBy(mp => mp.MealType)
+                                         .ToDictionary(
+                                            mg => mg.Key,
+                                            mg => mg.Select(mp => GetMealName(mp.MealId)).ToList()
+                                         )
+                            }).ToList()
+            }).ToList();
+
+        return new GenericResponse<List<UserMealPlanViewModel>>
+        {
+            Success = true,
+            Message = "Success",
+            Data = groupedMealPlans,
+            StatusCode = HttpStatusCode.OK
+        };
+    }
+
+    private string GetMealName(Guid mealId)
+    {
+        // Fetch the meal from the database by its ID and return its name
+        var meal = _dbContext.Meals.FirstOrDefault(m => m.Id == mealId);
+        return meal?.Name ?? "Unknown";
+    }
+
+
     // Define a helper method to convert integer to enum
     private string IntToFoodGroup(int value)
     {
@@ -142,5 +232,63 @@ public class MealService : IMealRepository
             default: return "Unknown"; // Handle unknown values
         }
     }
+
+    private void ValidateMealIds(IEnumerable<Guid> mealIds, MealType mealType)
+    {
+        foreach (var mealId in mealIds)
+        {
+            // Fetch the meal details
+            var meal = _dbContext.Meals.Where(m => m.Id == mealId);
+            if (meal == null)
+            {
+                throw new Exception($"Meal with ID {mealId} not found for {mealType}");
+            }
+        }
+    }
+
+    private void CreateMealPlanForMeals(IEnumerable<Guid> mealIds, MealType mealType, DateTime date, string userId)
+    {
+        // Validate meal type
+        if (mealType == MealType.Unknown || (mealType != MealType.Breakfast && mealType != MealType.Lunch && mealType != MealType.Dinner))
+        {
+            throw new Exception("Invalid meal type.");
+        }
+
+        // Check if a meal plan already exists for the user on the specified date and meal type
+        var existingMealPlan = _dbContext.MealPlans.FirstOrDefault(mp => mp.UserId == userId && mp.Date.Date == date.Date && mp.MealType == mealType);
+        if (existingMealPlan != null)
+        {
+            throw new Exception($"A meal plan already exists for user {userId} on {date.ToShortDateString()} for meal type {mealType}.");
+        }
+
+        // Check if a meal plan with the same meal type already exists for the user on the specified date
+        var mealPlansForDateAndType = _dbContext.MealPlans.Where(mp => mp.UserId == userId && mp.Date.Date == date.Date && mp.MealType == mealType);
+        if (mealPlansForDateAndType.Any())
+        {
+            throw new Exception($"A meal plan already exists for user {userId} on {date.ToShortDateString()} for meal type {mealType}.");
+        }
+
+        foreach (var mealId in mealIds)
+        {
+            // Fetch the meal details
+            var meal = _dbContext.Meals.FirstOrDefault(m => m.Id == mealId);
+            if (meal == null)
+            {
+                throw new Exception($"Meal with ID {mealId} not found.");
+            }
+
+            // Save the meal plan
+            var mealPlan = new MealPlan
+            {
+                MealId = mealId,
+                MealType = mealType,
+                Date = date,
+                UserId = userId // You should replace this with the actual user ID
+            };
+            _dbContext.MealPlans.Add(mealPlan);
+            _dbContext.SaveChanges();
+        }
+    }
+
 }
 

@@ -72,6 +72,7 @@ public class AuthService : IAuthRepository
         userObject.PhoneNumberConfirmed = true;
         userObject.LockoutEnabled = false;
         userObject.IsActive = true;
+        userObject.Height = createUserDto.Height;
 
         // Calculate BMI
         userObject.Bmi = CalculateBmi(userObject.Height, userObject.StartingWeight);
