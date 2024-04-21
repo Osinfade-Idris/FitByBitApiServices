@@ -6,6 +6,7 @@ using FitByBitService.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Net;
 using System.Security.Claims;
 
 namespace FitByBitService.Controllers;
@@ -47,7 +48,6 @@ public class WorkOutController : Controller
     [SwaggerOperation(Summary = "Get all workouts.")]
     public async Task<ActionResult<GenericResponse<AllWorkoutDto>>> GetAllWorkOuts([FromQuery] WorkoutSearchParameters searchParameters = null)
     {
-
         var response = await _workOutRepository.GetAllWorkoutsAsync(searchParameters);
         return StatusCode((int)response.StatusCode, response);
     }
@@ -61,8 +61,21 @@ public class WorkOutController : Controller
     [SwaggerOperation(Summary = "Get workout by id.")]
     public async Task<ActionResult<GenericResponse<AllWorkoutDto>>> GetWorkOutById(Guid id)
     {
-
         var response = await _workOutRepository.GetWorkoutByIdAsync(id);
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenericResponse<string>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(GenericResponse<>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(GenericResponse<>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(GenericResponse<>))]
+    [SwaggerOperation(Summary = "Create a workout plan.")]
+    public async Task<ActionResult<GenericResponse<string>>> CreateWorkoutPlan(CreateWorkoutPlanDto model)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var response = await _workOutRepository.CreateWorkOutPlan(model.Date, Guid.Parse(userId), model.WorkoutIds);
+
         return StatusCode((int)response.StatusCode, response);
     }
 }

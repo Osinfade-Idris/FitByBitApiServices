@@ -17,6 +17,7 @@ using FitByBitService.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using CommonEncryptionHandler = FitByBitService.Handlers.CommonEncryptionHandler;
@@ -236,6 +237,60 @@ public class WorkOutService : IWorkOutRepository
             _logger.LogInformation($"\n------ {exception.Message} | {_dateTime} -------\n");
             throw new FitByBitServiceUnavailableException($"{exception.Message}: service unavailable.",
                 HttpStatusCode.InternalServerError.ToString());
+        }
+    }
+
+    public async Task<GenericResponse<WorkOutPlan>> CreateWorkOutPlan(DateTime date, Guid userId, IEnumerable<Guid> workoutIds)
+    {
+        try
+        {
+            // Check if the provided Workout Program IDs exist
+            var workouts = await _dbContext.WorkoutPrograms
+                .Where(wp => workoutIds.Contains(wp.Id))
+                .ToListAsync();
+
+            if (workouts.Count != workoutIds.Count())
+            {
+                throw new Exception("One or more Workout Program IDs are invalid.");
+            }
+
+            // Check if a workout plan already exists for the user on the specified date and workout program ID
+            var existingWorkoutPlans = _dbContext.WorkoutPlans
+                .Where(wp => wp.UserId == userId && wp.Date.Date == date.Date && workoutIds.Contains(wp.WorkoutId))
+                .ToList();
+
+            if (existingWorkoutPlans.Any())
+            {
+                throw new Exception($"A workout plan already exists for user {userId} on {date.ToShortDateString()} for one or more of the provided workout program IDs.");
+            }
+
+            // Iterate through each instance of the provided workout plans
+            foreach (var workoutId in workoutIds)
+            {
+                // Save the workout plan
+                var workoutPlan = new WorkOutPlan
+                {
+                    WorkoutId = workoutId,
+                    Date = date,
+                    UserId = userId
+                };
+                _dbContext.WorkoutPlans.Add(workoutPlan);
+            }
+
+            // Save changes to the database
+            await _dbContext.SaveChangesAsync();
+
+            return new GenericResponse<WorkOutPlan>()
+            {
+                Success = true,
+                Message = "Workout plan created successfully.",
+                StatusCode = HttpStatusCode.OK
+            };
+        }
+        catch (Exception exception)
+        {
+            _logger.LogInformation($"\n------ {exception.Message} | {DateTime.Now} -------\n");
+            throw new FitByBitServiceUnavailableException($"{exception.Message}: service unavailable.", HttpStatusCode.InternalServerError.ToString());
         }
     }
 

@@ -42,3 +42,10 @@ public class WorkoutSearchParameters
     public CurrentFitnessLevel? FitnessLevel { get; set; }
     public FitnessGoal? Category { get; set; }
 }
+
+
+public class CreateWorkoutPlanDto
+{
+    public DateTime Date { get; set; }
+    public IEnumerable<Guid> WorkoutIds { get; set; }
+}

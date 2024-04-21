@@ -42,8 +42,7 @@ public class MealService : IMealRepository
         _dbContext = dbContext;
     }
 
-    [HttpPost]
-    public async Task<GenericResponse<MealPlan>> CreateMealPlan([FromBody] IEnumerable<MealPlanDataDto> mealPlanDataList, string userId)
+    public async Task<GenericResponse<MealPlan>> CreateMealPlan(IEnumerable<MealPlanDataDto> mealPlanDataList, string userId)
     {
         try
         {
