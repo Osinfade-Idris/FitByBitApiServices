@@ -1,9 +1,9 @@
-using FitByBitService.Helpers;
+using FitByBitApiService.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace FitByBitService.filters
+namespace FitByBitApiService.filters
 {
     public class ValidationActionFilter : IActionFilter
     {

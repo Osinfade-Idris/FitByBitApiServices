@@ -1,8 +1,7 @@
-﻿using FitByBitService.Entities.Responses;
-using FitByBitService.Exceptions;
-using FitByBitService.Helpers;
+﻿using FitByBitApiService.Exceptions;
+using FitByBitApiService.Helpers;
 
-namespace FitByBitService.Extensions
+namespace FitByBitApiService.Extensions
 {
     public static class ErrorResponseExtensions
     {

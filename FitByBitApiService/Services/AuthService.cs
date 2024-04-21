@@ -1,26 +1,25 @@
+using AutoMapper;
+using FitByBitApiService.Data;
+using FitByBitApiService.Entities.Models;
+using FitByBitApiService.Entities.Responses;
+using FitByBitApiService.Entities.Responses.UserResponse;
+using FitByBitApiService.Events;
+using FitByBitApiService.Exceptions;
+using FitByBitApiService.Helpers;
+using FitByBitApiService.Repositories;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
-using AutoMapper;
-using FitByBitService.Data;
-using FitByBitService.Entities.Models;
-using FitByBitService.Entities.Responses;
-using FitByBitService.Entities.Responses.UserResponse;
-using FitByBitService.Events;
-using FitByBitService.Exceptions;
-using FitByBitService.Helpers;
-using FitByBitService.Repositories;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using CommonEncryptionHandler = FitByBitService.Handlers.CommonEncryptionHandler;
-using IGenerateOtpHandler = FitByBitService.Handlers.IGenerateOtpHandler;
+using CommonEncryptionHandler = FitByBitApiService.Handlers.CommonEncryptionHandler;
+using IGenerateOtpHandler = FitByBitApiService.Handlers.IGenerateOtpHandler;
 
 
-namespace FitByBitService.Services;
+namespace FitByBitApiService.Services;
 
 public class AuthService : IAuthRepository
 {
@@ -494,7 +493,7 @@ public class AuthService : IAuthRepository
         try
         {
             var user = await _userManager.FindByEmailAsync(email);
-            if(user == null)
+            if (user == null)
             {
                 return new GenericResponse<bool>
                 {
@@ -526,7 +525,7 @@ public class AuthService : IAuthRepository
             };
         }
     }
-    
+
 
     private double CalculateBmi(double height, double weight)
     {

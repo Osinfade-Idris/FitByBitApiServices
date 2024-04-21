@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace FitByBitService.Helpers;
+namespace FitByBitApiService.Helpers;
 
 public static class CommonEncryptionHandler
 {

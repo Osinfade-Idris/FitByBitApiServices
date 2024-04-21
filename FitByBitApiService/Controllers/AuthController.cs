@@ -1,13 +1,13 @@
-using FitByBitService.Entities.Responses;
-using FitByBitService.Entities.Responses.UserResponse;
-using FitByBitService.Helpers;
-using FitByBitService.Repositories;
+using FitByBitApiService.Entities.Responses;
+using FitByBitApiService.Entities.Responses.UserResponse;
+using FitByBitApiService.Helpers;
+using FitByBitApiService.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
 
-namespace FitByBitService.Controllers;
+namespace FitByBitApiService.Controllers;
 
 [ApiController]
 [Produces("application/json")]
@@ -134,7 +134,7 @@ public class AuthController : Controller
     {
         var response = await _authRepository.ValidateTokenAsync(HttpContext);
         return StatusCode((int)response.StatusCode, response);
-     
+
     }
 
 

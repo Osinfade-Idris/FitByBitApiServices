@@ -1,4 +1,4 @@
-namespace FitByBitService.Exceptions;
+namespace FitByBitApiService.Exceptions;
 
 public class FitByBitBadRequestException : Exception
 {

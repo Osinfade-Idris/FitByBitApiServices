@@ -1,4 +1,4 @@
-namespace FitByBitService.Enum;
+namespace FitByBitApiService.Enum;
 
 public enum Gender
 {
@@ -13,7 +13,7 @@ public enum FitnessGoal
     LoseWeight = 1,
     MaintainCurrentWeight = 2,
     GainMuscleAndStrenght = 3,
-    BuildAHealthyLifstyle = 4
+    BuildAHealthyLifestyle = 4
 }
 public enum CurrentFitnessLevel
 {

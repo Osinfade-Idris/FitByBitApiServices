@@ -1,7 +1,7 @@
-using FitByBitService.Entities.Models;
-using FitByBitService.Entities.Responses;
+using FitByBitApiService.Entities.Models;
+using FitByBitApiService.Entities.Responses;
 
-namespace FitByBitService.Helpers;
+namespace FitByBitApiService.Helpers;
 
 public interface IGenerateOtpHandler
 {

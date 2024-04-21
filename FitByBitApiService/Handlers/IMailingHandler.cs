@@ -1,8 +1,8 @@
 using System.Net.Mail;
-using FitByBitService.Entities.Responses;
-using FitByBitService.Helpers;
+using FitByBitApiService.Entities.Responses;
+using FitByBitApiService.Helpers;
 
-namespace FitByBitService.Handlers;
+namespace FitByBitApiService.Handlers;
 
 public interface IMailingHandler
 {

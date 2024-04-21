@@ -1,15 +1,13 @@
-using FitByBitService.Entities.Responses;
-using FitByBitService.Entities.Responses.UserResponse;
-using FitByBitService.Entities.Responses.MealResponse;
-using FitByBitService.Helpers;
-using FitByBitService.Repositories;
+using FitByBitApiService.Entities.Models;
+using FitByBitApiService.Entities.Responses.MealResponse;
+using FitByBitApiService.Helpers;
+using FitByBitApiService.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
-using FitByBitApiService.Entities.Models;
 
-namespace FitByBitService.Controllers;
+namespace FitByBitApiService.Controllers;
 
 [ApiController]
 [Produces("application/json")]

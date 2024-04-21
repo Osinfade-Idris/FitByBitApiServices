@@ -1,9 +1,8 @@
 using FitByBitApiService.Entities.Models;
-using FitByBitService.Entities.Responses.MealResponse;
-using FitByBitService.Entities.Responses.UserResponse;
-using FitByBitService.Helpers;
+using FitByBitApiService.Entities.Responses.MealResponse;
+using FitByBitApiService.Helpers;
 
-namespace FitByBitService.Repositories;
+namespace FitByBitApiService.Repositories;
 
 public interface IMealRepository
 {

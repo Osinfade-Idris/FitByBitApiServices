@@ -1,15 +1,12 @@
-using System.Net;
-using System.Net.Mime;
-using System.Text;
 using AutoMapper;
-using FitByBitService.Entities.Responses;
-using FitByBitService.Events;
-using FitByBitService.Exceptions;
-using FitByBitService.Handlers;
+using FitByBitApiService.Entities.Responses;
+using FitByBitApiService.Events;
+using FitByBitApiService.Exceptions;
+using FitByBitApiService.Handlers;
 using MediatR;
-using Newtonsoft.Json;
+using System.Net;
 
-namespace FitByBitService.EventHandlers;
+namespace FitByBitApiService.EventHandlers;
 
 public class SendMailNotificationEventHandler : INotificationHandler<SendMailNotificationEvent>
 {

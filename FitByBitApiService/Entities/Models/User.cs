@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
-namespace FitByBitService.Entities.Models;
+namespace FitByBitApiService.Entities.Models;
 
 public class User : IdentityUser
 {
@@ -20,7 +20,7 @@ public class User : IdentityUser
     public double StartingWeight { get; set; }
     public double TargetWeight { get; set; }
 
-    public double Bmi {  get; set; }
+    public double Bmi { get; set; }
 
     [DefaultValue(true)]
     public bool IsActive { get; set; }

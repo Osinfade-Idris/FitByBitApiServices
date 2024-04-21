@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using FitByBitService.Common;
+using FitByBitApiService.Common;
 
-namespace FitByBitService.Entities.Models;
+namespace FitByBitApiService.Entities.Models;
 
 public class VerificationOtp : BaseEntity
 {

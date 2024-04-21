@@ -1,10 +1,7 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using FitByBitApiService.Entities.Models;
-using FitByBitService.Common;
-using FitByBitService.Enum;
+using FitByBitApiService.Enum;
 
-namespace FitByBitService.Entities.Responses.WorkOutResponse;
+namespace FitByBitApiService.Entities.Responses.WorkOutResponse;
 
 public class UserWorkOutDto
 {
@@ -18,22 +15,34 @@ public class UserWorkOutDto
     public bool IsActive { get; set; } // Indicates whether the user is active
 
     public WorkoutDto[] Workouts { get; set; } // Array of workouts associated with the user
-    public Dictionary<string, List<Exercise>> GroupedExercises { get; set; }
+    //public Dictionary<string, List<Exercise>> GroupedExercises { get; set; }
 }
 
 public class WorkoutDto
 {
-    public string ExerciseName { get; set; } // Name of the exercise
+    public string WorkoutName { get; set; } // Name of the exercise
     public FitnessGoal Category { get; set; } // Fitness goal category
     public CurrentFitnessLevel ExpertiseLevel { get; set; } // Expertise level
 }
 
 public class AllWorkoutDto
 {
-    public string ExerciseName { get; set; } // Name of the exercise
+    public string WorkoutName { get; set; } // Name of the exercise
     public FitnessGoal Category { get; set; } // Fitness goal category
     public CurrentFitnessLevel ExpertiseLevel { get; set; } // Expertise level
-    public object Exercises { get; internal set; }
+}
+
+public class WorkoutListDto
+{
+    public string WorkoutName { get; set; } // Name of the exercise
+}
+
+public class AllExerciseDto
+{
+    public string WorkoutName { get; set; }
+
+    public Dictionary<string, List<Exercise>> Exercises { get; set; }
+
 }
 
 
@@ -48,4 +57,16 @@ public class CreateWorkoutPlanDto
 {
     public DateTime Date { get; set; }
     public IEnumerable<Guid> WorkoutIds { get; set; }
+}
+
+
+public class ExerciseDto
+{
+    public string ExerciseName { get; set; }
+    public string Time { get; set; }
+    public string Rest { get; set; }
+    public string Set { get; set; }
+    public string Reps { get; set; }
+    public string Number { get; set; }
+    public string ImageUrl { get; set; }
 }

@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Aes = System.Security.Cryptography.Aes;
 
-namespace moola_Backend.Helpers;
+namespace FitByBitApiService.Handlers;
 
 public class EncryptionHandler : IEncryptionHandler
 {

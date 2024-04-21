@@ -1,17 +1,16 @@
 using FitByBitApiService.Entities.Models;
-using FitByBitService.Entities.Models;
-using FitByBitService.Enum;
+using FitByBitApiService.Enum;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace FitByBitService.Data;
+namespace FitByBitApiService.Data;
 
 public class ApplicationDbContext : IdentityDbContext<User>
 {
-    
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
+
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
@@ -32,13 +31,13 @@ public class ApplicationDbContext : IdentityDbContext<User>
         builder.Ignore<IdentityRole>();
         builder.Ignore<IdentityUserRole<string>>();
 
-/*        var customRoles = new List<IdentityRole>()
-        {
-            new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Superuser", NormalizedName = "Superuser".ToUpper()},
-            new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "User", NormalizedName = "User".ToUpper()},
-        };
+        /*        var customRoles = new List<IdentityRole>()
+                {
+                    new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Superuser", NormalizedName = "Superuser".ToUpper()},
+                    new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "User", NormalizedName = "User".ToUpper()},
+                };
 
-        builder.Entity<IdentityRole>().HasData(customRoles);*/
+                builder.Entity<IdentityRole>().HasData(customRoles);*/
 
         var customMeals = new List<Meal>()
         {
@@ -133,13 +132,13 @@ public class ApplicationDbContext : IdentityDbContext<User>
 
         builder.Entity<User>().HasData(customSuperUsers);
 
-/*        var identityUserRoles = new List<IdentityUserRole<string>>()
-        {
-            new IdentityUserRole<string> { UserId = customSuperUsers[0].Id.ToString(), RoleId = customRoles[0].Id.ToString() },
-            new IdentityUserRole<string> { UserId = customSuperUsers[1].Id.ToString(), RoleId = customRoles[0].Id.ToString() }
-        };
-        builder.Entity<IdentityUserRole<string>>().HasData(identityUserRoles);
-*/
+        /*        var identityUserRoles = new List<IdentityUserRole<string>>()
+                {
+                    new IdentityUserRole<string> { UserId = customSuperUsers[0].Id.ToString(), RoleId = customRoles[0].Id.ToString() },
+                    new IdentityUserRole<string> { UserId = customSuperUsers[1].Id.ToString(), RoleId = customRoles[0].Id.ToString() }
+                };
+                builder.Entity<IdentityUserRole<string>>().HasData(identityUserRoles);
+        */
         var customExercises = new List<Exercise>()
         {
             new Exercise { Name = "20 Minute HIIT Workout", ExerciseName= "Forward Lunge",  Time = "30 sec", Rest = "10 sec", Number = "1"},
@@ -190,21 +189,21 @@ public class ApplicationDbContext : IdentityDbContext<User>
 
         var customWorkouts = new List<WorkoutProgram>()
         {
-            new WorkoutProgram {ExerciseName= "20 Minute HIIT Workout", Category = FitnessGoal.LoseWeight,  ExpertiseLevel = CurrentFitnessLevel.Intermediate },
-            new WorkoutProgram {ExerciseName= "20 Minute HIIT Workout", Category = FitnessGoal.BuildAHealthyLifstyle,  ExpertiseLevel = CurrentFitnessLevel.Intermediate },
-            new WorkoutProgram {ExerciseName= "30 Minute Cardio Workout", Category = FitnessGoal.LoseWeight,  ExpertiseLevel = CurrentFitnessLevel.Beginner },
-            new WorkoutProgram {ExerciseName= "45 Minute HIIT Workout", Category = FitnessGoal.LoseWeight,  ExpertiseLevel = CurrentFitnessLevel.Intermediate },
-            new WorkoutProgram {ExerciseName= "45 Minute HIIT Workout", Category = FitnessGoal.LoseWeight,  ExpertiseLevel = CurrentFitnessLevel.Expert },
-            new WorkoutProgram {ExerciseName= "45 Minute HIIT Workout", Category = FitnessGoal.MaintainCurrentWeight,  ExpertiseLevel = CurrentFitnessLevel.Intermediate },
-            new WorkoutProgram {ExerciseName= "45 Minute HIIT Workout", Category = FitnessGoal.MaintainCurrentWeight,  ExpertiseLevel = CurrentFitnessLevel.Expert },
-            new WorkoutProgram {ExerciseName= "45 Minute HIIT Workout", Category = FitnessGoal.BuildAHealthyLifstyle,  ExpertiseLevel = CurrentFitnessLevel.Intermediate },
-            new WorkoutProgram {ExerciseName= "45 Minute HIIT Workout", Category = FitnessGoal.BuildAHealthyLifstyle,  ExpertiseLevel = CurrentFitnessLevel.Expert },
-            new WorkoutProgram {ExerciseName= "Beginner Strength Training Workout", Category = FitnessGoal.GainMuscleAndStrenght,  ExpertiseLevel = CurrentFitnessLevel.Beginner },
-            new WorkoutProgram {ExerciseName= "Intermediate Fat Loss Workout", Category = FitnessGoal.LoseWeight,  ExpertiseLevel = CurrentFitnessLevel.Intermediate },
-            new WorkoutProgram {ExerciseName= "Intermediate Fat Loss Workout", Category = FitnessGoal.LoseWeight,  ExpertiseLevel = CurrentFitnessLevel.Expert },
-            new WorkoutProgram {ExerciseName= "Intermediate Fat Loss Workout", Category = FitnessGoal.BuildAHealthyLifstyle,  ExpertiseLevel = CurrentFitnessLevel.Intermediate },
-            new WorkoutProgram {ExerciseName= "Intermediate Fat Loss Workout", Category = FitnessGoal.BuildAHealthyLifstyle,  ExpertiseLevel = CurrentFitnessLevel.Expert },
-            new WorkoutProgram {ExerciseName= "Beginner At Home Workout", Category = FitnessGoal.LoseWeight,  ExpertiseLevel = CurrentFitnessLevel.Beginner },
+            new WorkoutProgram {WorkoutName= "20 Minute HIIT Workout", Category = FitnessGoal.LoseWeight,  ExpertiseLevel = CurrentFitnessLevel.Intermediate },
+            new WorkoutProgram {WorkoutName= "20 Minute HIIT Workout", Category = FitnessGoal.BuildAHealthyLifestyle,  ExpertiseLevel = CurrentFitnessLevel.Intermediate },
+            new WorkoutProgram {WorkoutName= "30 Minute Cardio Workout", Category = FitnessGoal.LoseWeight,  ExpertiseLevel = CurrentFitnessLevel.Beginner },
+            new WorkoutProgram {WorkoutName= "45 Minute HIIT Workout", Category = FitnessGoal.LoseWeight,  ExpertiseLevel = CurrentFitnessLevel.Intermediate },
+            new WorkoutProgram {WorkoutName= "45 Minute HIIT Workout", Category = FitnessGoal.LoseWeight,  ExpertiseLevel = CurrentFitnessLevel.Expert },
+            new WorkoutProgram {WorkoutName= "45 Minute HIIT Workout", Category = FitnessGoal.MaintainCurrentWeight,  ExpertiseLevel = CurrentFitnessLevel.Intermediate },
+            new WorkoutProgram {WorkoutName= "45 Minute HIIT Workout", Category = FitnessGoal.MaintainCurrentWeight,  ExpertiseLevel = CurrentFitnessLevel.Expert },
+            new WorkoutProgram {WorkoutName= "45 Minute HIIT Workout", Category = FitnessGoal.BuildAHealthyLifestyle,  ExpertiseLevel = CurrentFitnessLevel.Intermediate },
+            new WorkoutProgram {WorkoutName= "45 Minute HIIT Workout", Category = FitnessGoal.BuildAHealthyLifestyle,  ExpertiseLevel = CurrentFitnessLevel.Expert },
+            new WorkoutProgram {WorkoutName= "Beginner Strength Training Workout", Category = FitnessGoal.GainMuscleAndStrenght,  ExpertiseLevel = CurrentFitnessLevel.Beginner },
+            new WorkoutProgram {WorkoutName= "Intermediate Fat Loss Workout", Category = FitnessGoal.LoseWeight,  ExpertiseLevel = CurrentFitnessLevel.Intermediate },
+            new WorkoutProgram {WorkoutName= "Intermediate Fat Loss Workout", Category = FitnessGoal.LoseWeight,  ExpertiseLevel = CurrentFitnessLevel.Expert },
+            new WorkoutProgram {WorkoutName= "Intermediate Fat Loss Workout", Category = FitnessGoal.BuildAHealthyLifestyle,  ExpertiseLevel = CurrentFitnessLevel.Intermediate },
+            new WorkoutProgram {WorkoutName= "Intermediate Fat Loss Workout", Category = FitnessGoal.BuildAHealthyLifestyle,  ExpertiseLevel = CurrentFitnessLevel.Expert },
+            new WorkoutProgram {WorkoutName= "Beginner At Home Workout", Category = FitnessGoal.LoseWeight,  ExpertiseLevel = CurrentFitnessLevel.Beginner },
 
         };
         builder.Entity<WorkoutProgram>().HasData(customWorkouts);

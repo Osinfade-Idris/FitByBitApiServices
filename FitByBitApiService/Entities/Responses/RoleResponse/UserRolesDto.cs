@@ -1,7 +1,7 @@
-using FitByBitService.Entities.Models;
+using FitByBitApiService.Entities.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace FitByBitService.Entities.Responses.RoleResponse;
+namespace FitByBitApiService.Entities.Responses.RoleResponse;
 
 public class UserRolesDto
 {

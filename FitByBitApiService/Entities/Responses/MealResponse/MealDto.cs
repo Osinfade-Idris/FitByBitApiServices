@@ -1,10 +1,6 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using FitByBitApiService.Entities.Models;
-using FitByBitService.Common;
-using FitByBitService.Enum;
+using FitByBitApiService.Enum;
 
-namespace FitByBitService.Entities.Responses.MealResponse;
+namespace FitByBitApiService.Entities.Responses.MealResponse;
 
 public class MealDto
 {
@@ -22,10 +18,10 @@ public class FoodGroupDto
     public object Name { get; internal set; }
 }
 
-public class CreateMealPlanDto 
+public class CreateMealPlanDto
 {
     public Guid MealPlanId { get; set; }
-    public Guid MealId { get; set; } 
-    public MealType MealType { get; set; } 
+    public Guid MealId { get; set; }
+    public MealType MealType { get; set; }
     public DateTime Date { get; set; }
 }

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FitByBitService.Entities.Responses.RoleResponse;
+namespace FitByBitApiService.Entities.Responses.RoleResponse;
 
 public class CreateRoleDto
 {

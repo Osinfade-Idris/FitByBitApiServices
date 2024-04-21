@@ -1,9 +1,8 @@
-using FitByBitService.Entities.Models;
-using FitByBitService.Entities.Responses;
-using FitByBitService.Entities.Responses.UserResponse;
-using FitByBitService.Helpers;
+using FitByBitApiService.Entities.Responses;
+using FitByBitApiService.Entities.Responses.UserResponse;
+using FitByBitApiService.Helpers;
 
-namespace FitByBitService.Repositories;
+namespace FitByBitApiService.Repositories;
 
 public interface IAuthRepository
 {

@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Aes = System.Security.Cryptography.Aes;
 
-namespace FitByBitService.Helpers;
+namespace FitByBitApiService.Helpers;
 
 public class EncryptionHandler : IEncryptionHandler
 {

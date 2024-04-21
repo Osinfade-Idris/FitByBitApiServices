@@ -1,10 +1,10 @@
 using AutoMapper;
-using FitByBitService.Data;
-using FitByBitService.Entities.Models;
-using FitByBitService.Entities.Responses;
+using FitByBitApiService.Data;
+using FitByBitApiService.Entities.Models;
+using FitByBitApiService.Entities.Responses;
 using Microsoft.EntityFrameworkCore;
 
-namespace FitByBitService.Helpers;
+namespace FitByBitApiService.Helpers;
 
 public class GenerateOtpHandler : IGenerateOtpHandler
 {
@@ -42,7 +42,7 @@ public class GenerateOtpHandler : IGenerateOtpHandler
         }
         while (await _context.VerificationOtps.AnyAsync(otp => otp.Code == code.ToString()));
 
-        var encryptedOtp = CommonEncryptionHandler.Encrypt(Convert.ToString(code), _otpSecretKey);
+        var encryptedOtp = Convert.ToString(code).Encrypt(_otpSecretKey);
         int expiry = int.Parse(_configuration["MailingSettings:Expires"]);
 
         var otpObjectDto = new VerificationOtpDto()

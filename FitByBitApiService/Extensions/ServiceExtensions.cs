@@ -1,19 +1,19 @@
 using System.Text;
-using FitByBitService.Configuration;
-using FitByBitService.Data;
-using FitByBitService.Entities.Models;
-using FitByBitService.EventHandlers;
-using FitByBitService.Handlers;
-using FitByBitService.Mappings;
-using FitByBitService.Repositories;
-using FitByBitService.Services;
+using FitByBitApiService.Configuration;
+using FitByBitApiService.Data;
+using FitByBitApiService.Entities.Models;
+using FitByBitApiService.EventHandlers;
+using FitByBitApiService.Handlers;
+using FitByBitApiService.Mappings;
+using FitByBitApiService.Repositories;
+using FitByBitApiService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
-namespace FitByBitService.Extensions;
+namespace FitByBitApiService.Extensions;
 
 public static class IdentityConfigurationExtension
 {

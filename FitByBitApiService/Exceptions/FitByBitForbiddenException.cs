@@ -1,4 +1,4 @@
-﻿namespace FitByBitService.Exceptions;
+﻿namespace FitByBitApiService.Exceptions;
 
 public class FitByBitForbiddenException : Exception
 {
@@ -6,14 +6,14 @@ public class FitByBitForbiddenException : Exception
 
     public FitByBitForbiddenException()
     {
-            
+
     }
 
     public FitByBitForbiddenException(string message) : base(message)
     {
 
     }
-        
+
     public FitByBitForbiddenException(string message, string code) : base(message)
     {
         Code = code;
@@ -21,6 +21,6 @@ public class FitByBitForbiddenException : Exception
 
     public FitByBitForbiddenException(string message, Exception inner) : base(message, inner)
     {
-            
+
     }
 }

@@ -1,4 +1,4 @@
-namespace FitByBitService.Entities.Responses.UserResponse;
+namespace FitByBitApiService.Entities.Responses.UserResponse;
 
 public class CreateJwtTokenDto
 {

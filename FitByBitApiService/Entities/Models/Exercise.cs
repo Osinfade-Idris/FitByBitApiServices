@@ -1,6 +1,4 @@
-﻿using FitByBitService.Common;
-
-namespace FitByBitApiService.Entities.Models
+﻿namespace FitByBitApiService.Entities.Models
 {
     public class Exercise 
     {

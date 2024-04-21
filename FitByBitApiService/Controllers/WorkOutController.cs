@@ -1,15 +1,12 @@
-using FitByBitService.Entities.Responses;
-using FitByBitService.Entities.Responses.UserResponse;
-using FitByBitService.Entities.Responses.WorkOutResponse;
-using FitByBitService.Helpers;
-using FitByBitService.Repositories;
+using FitByBitApiService.Entities.Responses.WorkOutResponse;
+using FitByBitApiService.Helpers;
+using FitByBitApiService.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Net;
 using System.Security.Claims;
 
-namespace FitByBitService.Controllers;
+namespace FitByBitApiService.Controllers;
 
 [ApiController]
 [Produces("application/json")]
@@ -59,9 +56,9 @@ public class WorkOutController : Controller
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(GenericResponse<>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(GenericResponse<>))]
     [SwaggerOperation(Summary = "Get workout by id.")]
-    public async Task<ActionResult<GenericResponse<AllWorkoutDto>>> GetWorkOutById(Guid id)
+    public async Task<ActionResult<GenericResponse<AllWorkoutDto>>> GetExercisesByWorkoutName(string name)
     {
-        var response = await _workOutRepository.GetWorkoutByIdAsync(id);
+        var response = await _workOutRepository.GetWorkoutExercisesByName(name);
         return StatusCode((int)response.StatusCode, response);
     }
 

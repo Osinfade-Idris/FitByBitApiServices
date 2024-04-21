@@ -1,9 +1,9 @@
-using FitByBitService.Helpers;
+using FitByBitApiService.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace FitByBitService.Extensions;
+namespace FitByBitApiService.Extensions;
 
 public class ValidatorActionFilter : IActionFilter
 {
@@ -24,8 +24,8 @@ public class ValidatorActionFilter : IActionFilter
         (ModelStateDictionary modelState)
     {
         var query = from state in modelState.Values.ToList()
-            from error in state.Errors
-            select error.ErrorMessage;
+                    from error in state.Errors
+                    select error.ErrorMessage;
 
         var errorList = query.ToList();
         return errorList;

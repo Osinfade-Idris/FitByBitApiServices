@@ -1,6 +1,6 @@
-using FitByBitService.Data;
-using FitByBitService.Extensions;
-using FitByBitService.filters;
+using FitByBitApiService.Data;
+using FitByBitApiService.Extensions;
+using FitByBitApiService.filters;
 using Microsoft.EntityFrameworkCore;
 
 

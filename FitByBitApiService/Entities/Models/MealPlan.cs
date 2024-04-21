@@ -1,6 +1,5 @@
-﻿using FitByBitService.Common;
-using FitByBitService.Entities.Models;
-using FitByBitService.Enum;
+﻿using FitByBitApiService.Common;
+using FitByBitApiService.Enum;
 
 namespace FitByBitApiService.Entities.Models
 {

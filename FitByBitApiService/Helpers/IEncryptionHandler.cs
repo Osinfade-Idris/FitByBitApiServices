@@ -1,4 +1,4 @@
-namespace FitByBitService.Helpers;
+namespace FitByBitApiService.Helpers;
 
 public interface IEncryptionHandler
 {

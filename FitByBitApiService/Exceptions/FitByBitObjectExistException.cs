@@ -1,4 +1,4 @@
-namespace FitByBitService.Exceptions;
+namespace FitByBitApiService.Exceptions;
 
 public class FitByBitObjectExistException : Exception
 {
@@ -6,12 +6,12 @@ public class FitByBitObjectExistException : Exception
 
     public FitByBitObjectExistException()
     {
-        
+
     }
 
     public FitByBitObjectExistException(string message) : base(message)
     {
-        
+
     }
 
     public FitByBitObjectExistException(string message, string code) : base(message)
@@ -21,7 +21,7 @@ public class FitByBitObjectExistException : Exception
 
     public FitByBitObjectExistException(string message, Exception inner) : base(message, inner)
     {
-        
+
     }
-    
+
 }

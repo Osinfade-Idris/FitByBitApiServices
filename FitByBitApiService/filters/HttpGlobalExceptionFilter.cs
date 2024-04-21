@@ -1,12 +1,12 @@
 ﻿using System.Net;
-using FitByBitService.Exceptions;
-using FitByBitService.Extensions;
-using FitByBitService.Helpers;
+using FitByBitApiService.Exceptions;
+using FitByBitApiService.Extensions;
+using FitByBitApiService.Helpers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace FitByBitService.filters
+namespace FitByBitApiService.filters
 {
     public class HttpGlobalExceptionFilter : IExceptionFilter
     {

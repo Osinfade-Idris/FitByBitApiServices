@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FitByBitService.Entities.Responses
+namespace FitByBitApiService.Entities.Responses
 {
     public class SendMailDto
     {

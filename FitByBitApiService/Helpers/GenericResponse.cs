@@ -1,7 +1,7 @@
 using System.Net;
 using Newtonsoft.Json;
 
-namespace FitByBitService.Helpers;
+namespace FitByBitApiService.Helpers;
 
 public class GenericResponse<T>
 {

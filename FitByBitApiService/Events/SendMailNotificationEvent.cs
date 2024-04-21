@@ -1,5 +1,5 @@
 using MediatR;
-namespace FitByBitService.Events;
+namespace FitByBitApiService.Events;
 
 public class SendMailNotificationEvent : INotification
 {

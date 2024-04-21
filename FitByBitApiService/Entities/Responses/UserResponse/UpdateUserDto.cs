@@ -1,8 +1,8 @@
-using FitByBitService.Enum;
+using FitByBitApiService.Enum;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace FitByBitService.Entities.Responses.UserResponse;
+namespace FitByBitApiService.Entities.Responses.UserResponse;
 
 public class UpdateUserDto
 {

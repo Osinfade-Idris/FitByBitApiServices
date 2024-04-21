@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace FitByBitService.Entities.Responses;
+namespace FitByBitApiService.Entities.Responses;
 
 public class GeneralResponse
 {

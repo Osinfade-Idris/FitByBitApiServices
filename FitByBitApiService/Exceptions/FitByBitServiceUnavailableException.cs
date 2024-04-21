@@ -1,4 +1,4 @@
-﻿namespace FitByBitService.Exceptions;
+﻿namespace FitByBitApiService.Exceptions;
 
 public class FitByBitServiceUnavailableException : Exception
 {
@@ -6,14 +6,14 @@ public class FitByBitServiceUnavailableException : Exception
 
     public FitByBitServiceUnavailableException()
     {
-            
+
     }
-        
+
     public FitByBitServiceUnavailableException(string message) : base(message)
     {
 
     }
-        
+
     public FitByBitServiceUnavailableException(string message, string code) : base(message)
     {
         Code = code;

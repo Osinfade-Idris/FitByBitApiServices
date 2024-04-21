@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FitByBitService.Entities.Responses.UserResponse;
+namespace FitByBitApiService.Entities.Responses.UserResponse;
 
 public class LoginDto
 {

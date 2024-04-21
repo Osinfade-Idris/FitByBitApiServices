@@ -1,4 +1,4 @@
-﻿namespace FitByBitService.Exceptions;
+﻿namespace FitByBitApiService.Exceptions;
 
 public class FitByBitNotFoundException : Exception
 {
@@ -6,15 +6,15 @@ public class FitByBitNotFoundException : Exception
 
     public FitByBitNotFoundException()
     {
-            
+
     }
-        
-        
+
+
     public FitByBitNotFoundException(string message) : base(message)
     {
 
     }
-        
+
     public FitByBitNotFoundException(string message, string code) : base(message)
     {
         Code = code;

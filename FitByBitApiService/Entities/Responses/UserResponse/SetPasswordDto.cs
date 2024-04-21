@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FitByBitService.Entities.Responses.UserResponse;
+namespace FitByBitApiService.Entities.Responses.UserResponse;
 
 public class SetPasswordDto
 {
     public string OtpCode { get; set; } = null!;
-    
+
     [DataType(DataType.EmailAddress)]
     public string EmailAddress { get; set; } = string.Empty;
 

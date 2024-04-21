@@ -1,25 +1,25 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using FitByBitService.Common;
-using FitByBitService.Enum;
+using FitByBitApiService.Common;
+using FitByBitApiService.Enum;
 
-namespace FitByBitService.Entities.Responses.UserResponse;
+namespace FitByBitApiService.Entities.Responses.UserResponse;
 
-public class UserDto: BaseEntity
+public class UserDto : BaseEntity
 {
     public string FirstName { get; set; } = null!;
-    
+
     public string LastName { get; set; } = null!;
-    
-    [DataType(DataType.EmailAddress)] 
+
+    [DataType(DataType.EmailAddress)]
     public string Email { get; set; } = null!;
-    
+
     [DataType(DataType.PhoneNumber)]
     public string PhoneNumber { get; set; } = null!;
-    
-    [DataType(DataType.Date)] 
+
+    [DataType(DataType.Date)]
     public DateTime Dob { get; set; }
-    
+
     public bool IsActive { get; set; }
     // Use the defined enums
     public FitnessGoal FitnessGoal { get; set; }

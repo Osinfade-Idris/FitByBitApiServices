@@ -1,4 +1,4 @@
-namespace moola_Backend.Helpers;
+namespace FitByBitApiService.Handlers;
 
 public interface IEncryptionHandler
 {

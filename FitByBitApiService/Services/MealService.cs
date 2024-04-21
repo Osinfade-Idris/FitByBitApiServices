@@ -1,23 +1,19 @@
-using System;
-using System.Net;
 using AutoMapper;
+using FitByBitApiService.Data;
 using FitByBitApiService.Entities.Models;
-using FitByBitService.Data;
-using FitByBitService.Entities.Models;
-using FitByBitService.Entities.Responses;
-using FitByBitService.Entities.Responses.MealResponse;
-using FitByBitService.Enum;
-using FitByBitService.Exceptions;
-using FitByBitService.Helpers;
-using FitByBitService.Repositories;
+using FitByBitApiService.Entities.Responses.MealResponse;
+using FitByBitApiService.Enum;
+using FitByBitApiService.Exceptions;
+using FitByBitApiService.Helpers;
+using FitByBitApiService.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using IGenerateOtpHandler = FitByBitService.Handlers.IGenerateOtpHandler;
+using System.Net;
+using IGenerateOtpHandler = FitByBitApiService.Handlers.IGenerateOtpHandler;
 
 
-namespace FitByBitService.Services;
+namespace FitByBitApiService.Services;
 
 public class MealService : IMealRepository
 {
@@ -248,7 +244,7 @@ public class MealService : IMealRepository
     private void CreateMealPlanForMeals(IEnumerable<Guid> mealIds, MealType mealType, DateTime date, string userId)
     {
         // Validate meal type
-        if (mealType == MealType.Unknown || (mealType != MealType.Breakfast && mealType != MealType.Lunch && mealType != MealType.Dinner))
+        if (mealType == MealType.Unknown || mealType != MealType.Breakfast && mealType != MealType.Lunch && mealType != MealType.Dinner)
         {
             throw new Exception("Invalid meal type.");
         }

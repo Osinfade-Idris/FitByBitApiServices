@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace FitByBitService.Configuration;
+namespace FitByBitApiService.Configuration;
 
 public class SmtpConfiguration
 {

@@ -1,4 +1,4 @@
-﻿namespace FitByBitService.Exceptions;
+﻿namespace FitByBitApiService.Exceptions;
 
 public class FitByBitSystemErrorException : Exception
 {
@@ -6,12 +6,12 @@ public class FitByBitSystemErrorException : Exception
 
     public FitByBitSystemErrorException()
     {
-            
+
     }
 
     public FitByBitSystemErrorException(string message) : base(message)
     {
-            
+
     }
 
     public FitByBitSystemErrorException(string message, string code) : base(message)
@@ -21,6 +21,6 @@ public class FitByBitSystemErrorException : Exception
 
     public FitByBitSystemErrorException(string message, Exception inner) : base(message, inner)
     {
-            
+
     }
 }
