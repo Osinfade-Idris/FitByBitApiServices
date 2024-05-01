@@ -53,8 +53,6 @@ public class MealController : Controller
         return StatusCode((int)response.StatusCode, response);
     }
 
-
-
     [Authorize]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenericResponse<FoodGroupDto>))]
@@ -77,11 +75,11 @@ public class MealController : Controller
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(GenericResponse<>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(GenericResponse<>))]
     [SwaggerOperation(Summary = "Get the Meal Plans for the logged in user.")]
-    public async Task<ActionResult<GenericResponse<MealDto>>> GetMealPlans()
+    public async Task<ActionResult<GenericResponse<MealDto>>> GetMealPlans(DateTime date)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        var response = await _mealRepository.GetMealPlansGroupedByUserIdAndDate(userId);
+        var response = await _mealRepository.GetMealPlansGroupedByUserIdAndDate(date, userId);
         return StatusCode((int)response.StatusCode, response);
     }
 }

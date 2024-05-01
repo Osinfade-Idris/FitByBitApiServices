@@ -23,6 +23,7 @@ public class WorkoutDto
     public string WorkoutName { get; set; } // Name of the exercise
     public FitnessGoal Category { get; set; } // Fitness goal category
     public CurrentFitnessLevel ExpertiseLevel { get; set; } // Expertise level
+    //public Guid WorkoutId { get; set; }
 }
 
 public class AllWorkoutDto
@@ -35,6 +36,7 @@ public class AllWorkoutDto
 public class WorkoutListDto
 {
     public string WorkoutName { get; set; } // Name of the exercise
+    public Guid WorkoutId { get; internal set; }
 }
 
 public class AllExerciseDto
@@ -55,8 +57,7 @@ public class WorkoutSearchParameters
 
 public class CreateWorkoutPlanDto
 {
-    public DateTime Date { get; set; }
-    public IEnumerable<Guid> WorkoutIds { get; set; }
+    public Guid WorkoutId { get; set; }
 }
 
 
@@ -69,4 +70,39 @@ public class ExerciseDto
     public string Reps { get; set; }
     public string Number { get; set; }
     public string ImageUrl { get; set; }
+}
+
+
+public class CreateWorkoutListDto
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } // Assuming a 'Name' property exists in WorkoutPlan
+    public DateTime Date { get; set; }
+    public bool Status { get; set; }
+}
+
+
+public class UpdateWorkoutPlanDto
+{
+    public Guid WorkoutPlanId { get; set; }
+}
+
+
+public class GetWorkoutPlansByDateDto
+{
+    public Guid Id { get; set; }
+    public Guid WorkoutId { get; set; }
+    public string WorkoutName { get; set; }
+    public DateTime Date { get; set; }
+    public bool Status { get; set; }
+}
+
+
+
+public class AllWorkoustDto
+{
+    public string WorkoutName { get; set; } // Name of the exercise
+    public FitnessGoal Category { get; set; } // Fitness goal category
+    public CurrentFitnessLevel ExpertiseLevel { get; set; } // Expertise level
+    public Guid WorkoutId { get; set; }
 }

@@ -16,7 +16,6 @@ namespace FitByBitApiService.Entities.Models
     {
         public List<Guid> MealIds { get; set; }
         public MealType MealType { get; set; }
-        public DateTime Date { get; set; }
     }
 
     public class UserMealPlanViewModel
@@ -25,9 +24,18 @@ namespace FitByBitApiService.Entities.Models
         public List<UserMealPlanDateViewModel> MealPlans { get; set; }
     }
 
+    public class MealInfo
+    {
+        public string Name { get; set; }
+        public string Calories { get; set; }
+    }
     public class UserMealPlanDateViewModel
     {
         public DateTime Date { get; set; }
-        public Dictionary<MealType, List<string>> Meals { get; set; }
+        //public Dictionary<MealType, List<string>> Meals { get; set; }
+
+        public Dictionary<MealType, List<MealInfo>> Meals { get; set; }
     }
+
+
 }

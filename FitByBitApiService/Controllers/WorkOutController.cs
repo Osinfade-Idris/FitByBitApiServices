@@ -55,7 +55,7 @@ public class WorkOutController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(GenericResponse<>))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(GenericResponse<>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(GenericResponse<>))]
-    [SwaggerOperation(Summary = "Get workout by id.")]
+    [SwaggerOperation(Summary = "Get exercises by name.")]
     public async Task<ActionResult<GenericResponse<AllWorkoutDto>>> GetExercisesByWorkoutName(string name)
     {
         var response = await _workOutRepository.GetWorkoutExercisesByName(name);
@@ -67,11 +67,55 @@ public class WorkOutController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(GenericResponse<>))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(GenericResponse<>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(GenericResponse<>))]
-    [SwaggerOperation(Summary = "Create a workout plan.")]
-    public async Task<ActionResult<GenericResponse<string>>> CreateWorkoutPlan(CreateWorkoutPlanDto model)
+    [SwaggerOperation(Summary = "Create a daily workout.")]
+    public async Task<ActionResult<GenericResponse<string>>> AddDailyWorkout(CreateWorkoutPlanDto model)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var response = await _workOutRepository.CreateWorkOutPlan(model.Date, Guid.Parse(userId), model.WorkoutIds);
+        var date = DateTime.UtcNow;
+        var response = await _workOutRepository.CreateWorkOutPlan(date, Guid.Parse(userId), model.WorkoutId);
+
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenericResponse<string>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(GenericResponse<>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(GenericResponse<>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(GenericResponse<>))]
+    [SwaggerOperation(Summary = "Get daily workout.")]
+    public async Task<ActionResult<GenericResponse<string>>> GetDailyWorkout(DateTime date)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var response = await _workOutRepository.GetWorkoutPlansByDate(date, Guid.Parse(userId));
+
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenericResponse<string>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(GenericResponse<>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(GenericResponse<>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(GenericResponse<>))]
+    [SwaggerOperation(Summary = "update a workout plan.")]
+    public async Task<ActionResult<GenericResponse<string>>> UpdateDailyWorkout(UpdateWorkoutPlanDto model)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var response = await _workOutRepository.UpdateDailyWorkOut(Guid.Parse(userId), model.WorkoutPlanId);
+
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenericResponse<string>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(GenericResponse<>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(GenericResponse<>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(GenericResponse<>))]
+    [SwaggerOperation(Summary = "update a workout plan.")]
+    public async Task<ActionResult<GenericResponse<string>>> Workouts()
+    {
+        //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var response = await _workOutRepository.GetAllWorkouts();
 
         return StatusCode((int)response.StatusCode, response);
     }

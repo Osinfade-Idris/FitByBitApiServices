@@ -42,6 +42,7 @@ public class MealService : IMealRepository
     {
         try
         {
+            var date = DateTime.UtcNow;
             // Check for duplicate meal types within the provided meal plans
             var mealTypeCounts = new Dictionary<MealType, int>();
             foreach (var mealPlan in mealPlanDataList)
@@ -67,7 +68,7 @@ public class MealService : IMealRepository
             foreach (var mealPlanData in mealPlanDataList)
             {
                 ValidateMealIds(mealPlanData.MealIds, mealPlanData.MealType);
-                CreateMealPlanForMeals(mealPlanData.MealIds, mealPlanData.MealType, mealPlanData.Date, userId);
+                CreateMealPlanForMeals(mealPlanData.MealIds, mealPlanData.MealType, date, userId);
             }
 
             return new GenericResponse<MealPlan>()
@@ -174,27 +175,36 @@ public class MealService : IMealRepository
 
     }
 
-    public async Task<GenericResponse<List<UserMealPlanViewModel>>> GetMealPlansGroupedByUserIdAndDate(string userId)
+    public async Task<GenericResponse<List<UserMealPlanViewModel>>> GetMealPlansGroupedByUserIdAndDate(DateTime date, string userId)
     {
-        var mealPlans = _dbContext.MealPlans.Where(mp => mp.UserId == userId).ToList();
+        //var mealPlans = _dbContext.MealPlans.Where(mp => mp.UserId == userId).ToList();
+
+        var mealPlans = _dbContext.MealPlans
+        .Where(mp => mp.UserId == userId && mp.Date.Date == date.Date) // Filter by userId and date
+        .ToList();
 
         // Group meal plans by userId
         var groupedMealPlans = mealPlans.GroupBy(mp => mp.UserId)
-            .Select(g => new UserMealPlanViewModel
-            {
-                UserId = userId,
-                MealPlans = g.OrderBy(mp => mp.Date)
-                            .GroupBy(mp => mp.Date.Date)
-                            .Select(gg => new UserMealPlanDateViewModel
-                            {
-                                Date = gg.Key,
-                                Meals = gg.GroupBy(mp => mp.MealType)
-                                         .ToDictionary(
-                                            mg => mg.Key,
-                                            mg => mg.Select(mp => GetMealName(mp.MealId)).ToList()
-                                         )
-                            }).ToList()
-            }).ToList();
+    .Select(g => new UserMealPlanViewModel
+    {
+        UserId = g.Key, // Assuming you want to set UserId to the actual user ID from the group
+        MealPlans = g.OrderBy(mp => mp.Date)
+                    .GroupBy(mp => mp.Date.Date)
+                    .Select(gg => new UserMealPlanDateViewModel
+                    {
+                        Date = gg.Key,
+                        Meals = gg.GroupBy(mp => mp.MealType)
+                                 .ToDictionary(
+                                    mg => mg.Key,
+                                    mg => mg.Select(mp => new MealInfo
+                                    {
+                                        Name = GetMealName(mp.MealId),
+                                        Calories = GetMealCalorie(mp.MealId)
+                                    }).ToList()
+                                 )
+                    }).ToList()
+    }).ToList();
+
 
         return new GenericResponse<List<UserMealPlanViewModel>>
         {
@@ -211,7 +221,12 @@ public class MealService : IMealRepository
         var meal = _dbContext.Meals.FirstOrDefault(m => m.Id == mealId);
         return meal?.Name ?? "Unknown";
     }
-
+    private string GetMealCalorie(Guid mealId)
+    {
+        // Fetch the meal from the database by its ID and return its name
+        var meal = _dbContext.Meals.FirstOrDefault(m => m.Id == mealId);
+        return meal?.Calories ?? "Unknown";
+    }
 
     // Define a helper method to convert integer to enum
     private string IntToFoodGroup(int value)
@@ -284,6 +299,7 @@ public class MealService : IMealRepository
             _dbContext.SaveChanges();
         }
     }
+
 
 }
 

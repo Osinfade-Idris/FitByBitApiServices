@@ -9,11 +9,11 @@ using FitByBitApiService.Helpers;
 using FitByBitApiService.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Xml.Linq;
 using IGenerateOtpHandler = FitByBitApiService.Handlers.IGenerateOtpHandler;
-
 
 namespace FitByBitApiService.Services;
 
@@ -79,6 +79,7 @@ public class WorkOutService : IWorkOutRepository
                 // Map the workouts to WorkoutDto objects
                 var workoutDtos = workouts.Select(w => new WorkoutDto
                 {
+                    //WorkoutId = w.Id,
                     WorkoutName = w.WorkoutName,
                     Category = w.Category,
                     ExpertiseLevel = w.ExpertiseLevel
@@ -140,8 +141,9 @@ public class WorkOutService : IWorkOutRepository
             var allWorkoutDtos = workoutNames.Select(workoutName => new WorkoutListDto
             {
                 WorkoutName = workoutName,
-/*                Category = workouts.Where(w => w.WorkoutName == workoutName).Select(w => w.Category).Distinct().FirstOrDefault(),
-                ExpertiseLevel = workouts.Where(w => w.WorkoutName == workoutName).Select(w => w.ExpertiseLevel).Distinct().FirstOrDefault()*/
+                WorkoutId = workouts.Where(w => w.WorkoutName == workoutName).Select(w => w.Id).FirstOrDefault(),
+                /*              Category = workouts.Where(w => w.WorkoutName == workoutName).Select(w => w.Category).Distinct().FirstOrDefault(),
+                                ExpertiseLevel = workouts.Where(w => w.WorkoutName == workoutName).Select(w => w.ExpertiseLevel).Distinct().FirstOrDefault()*/
             }).ToList();
 
             return new GenericResponse<IEnumerable<WorkoutListDto>>()
@@ -261,51 +263,55 @@ public class WorkOutService : IWorkOutRepository
         }
     }
 
-    public async Task<GenericResponse<WorkOutPlan>> CreateWorkOutPlan(DateTime date, Guid userId, IEnumerable<Guid> workoutIds)
+    public async Task<GenericResponse<CreateWorkoutListDto>> CreateWorkOutPlan(DateTime date, Guid userId, Guid workoutId)
     {
         try
         {
-            // Check if the provided Workout Program IDs exist
+            // Check if the provided Workout Program ID exists
             var workouts = await _dbContext.WorkoutPrograms
-                .Where(wp => workoutIds.Contains(wp.Id))
+                .Where(wp => wp.Id == workoutId) // Changed to check for a single ID
                 .ToListAsync();
 
-            if (workouts.Count != workoutIds.Count())
+            if (workouts.Count != 1)
             {
-                throw new Exception("One or more Workout Program IDs are invalid.");
+                throw new Exception("Invalid Workout Program ID provided.");
             }
 
             // Check if a workout plan already exists for the user on the specified date and workout program ID
             var existingWorkoutPlans = _dbContext.WorkoutPlans
-                .Where(wp => wp.UserId == userId && wp.Date.Date == date.Date && workoutIds.Contains(wp.WorkoutId))
+                .Where(wp => wp.UserId == userId && wp.Date.Date == date.Date && wp.WorkoutId == workoutId)
                 .ToList();
 
             if (existingWorkoutPlans.Any())
             {
-                throw new Exception($"A workout plan already exists for user {userId} on {date.ToShortDateString()} for one or more of the provided workout program IDs.");
+                throw new Exception($"A workout plan already exists for user {userId} on {date.ToShortDateString()} for the provided workout program ID.");
             }
 
-            // Iterate through each instance of the provided workout plans
-            foreach (var workoutId in workoutIds)
+            // Save the workout plan
+            var workoutPlan = new WorkOutPlan
             {
-                // Save the workout plan
-                var workoutPlan = new WorkOutPlan
-                {
-                    WorkoutId = workoutId,
-                    Date = date,
-                    UserId = userId
-                };
-                _dbContext.WorkoutPlans.Add(workoutPlan);
-            }
+                WorkoutId = workoutId,
+                Date = date,
+                UserId = userId
+            };
+            _dbContext.WorkoutPlans.Add(workoutPlan);
 
             // Save changes to the database
             await _dbContext.SaveChangesAsync();
 
-            return new GenericResponse<WorkOutPlan>()
+            return new GenericResponse<CreateWorkoutListDto>()
             {
                 Success = true,
                 Message = "Workout plan created successfully.",
-                StatusCode = HttpStatusCode.OK
+                StatusCode = HttpStatusCode.OK,
+                Data = new CreateWorkoutListDto
+                {
+                    Id = workoutId,
+                    // Assuming 'Name' property exists in WorkoutPlan
+                    Name = workouts.FirstOrDefault(wp => wp.Id == workoutId)?.WorkoutName,
+                    Date = date,
+                    Status = false
+                }
             };
         }
         catch (Exception exception)
@@ -314,6 +320,126 @@ public class WorkOutService : IWorkOutRepository
             throw new FitByBitServiceUnavailableException($"{exception.Message}: service unavailable.", HttpStatusCode.InternalServerError.ToString());
         }
     }
+
+    public async Task<GenericResponse<IEnumerable<GetWorkoutPlansByDateDto>>> GetWorkoutPlansByDate(DateTime date, Guid userId)
+    {
+        try
+        {
+            // Fetch workout plans for the user and specified date
+            var workoutPlans = await _dbContext.WorkoutPlans
+                .Where(wp => wp.UserId == userId && wp.Date.Date == date.Date)
+                .ToListAsync();
+
+
+            // Convert workout plans to response DTOs
+            var workoutsPlans = workoutPlans.Select(wp => new GetWorkoutPlansByDateDto
+            {
+                Id = wp.Id,
+                WorkoutId = wp.WorkoutId,
+                Date = wp.Date,
+                WorkoutName = _dbContext.WorkoutPrograms.FirstOrDefault(p => p.Id == wp.WorkoutId)?.WorkoutName,
+                Status = wp.Status
+            });
+
+            // Check for empty response and return appropriate message if needed
+            if (!workoutsPlans.Any())
+            {
+                throw new FitByBitNotFoundException($"No workout plans found for the specified date: {date}");
+            }
+            return new GenericResponse<IEnumerable<GetWorkoutPlansByDateDto>>()
+            {
+                Success = true,
+                Message = "Success",
+                Data = (IEnumerable<GetWorkoutPlansByDateDto>)workoutsPlans.ToList(),
+                StatusCode = HttpStatusCode.OK
+            };
+
+        }
+        catch (Exception exception)
+        {
+            _logger.LogInformation($"\n------ {exception.Message} | {DateTime.Now} -------\n");
+            throw new FitByBitServiceUnavailableException($"{exception.Message}: service unavailable.", HttpStatusCode.InternalServerError.ToString());
+        }
+    }
+
+    public async Task<GenericResponse<GetWorkoutPlansByDateDto>> UpdateDailyWorkOut(Guid userId, Guid workoutPlanId)
+    {
+        try
+        {
+
+            // Fetch the workout plan by ID
+            var workoutPlan = await _dbContext.WorkoutPlans.FirstOrDefaultAsync(wp => wp.Id == workoutPlanId);
+
+            // Check if workout plan exists
+            if (workoutPlan == null)
+            {
+                throw new Exception($"Workout plan with ID: {workoutPlanId} not found.");
+            }
+
+            // Save the workout plan
+            workoutPlan.Status = true;
+
+            // Save changes to the database
+            await _dbContext.SaveChangesAsync();
+
+            return new GenericResponse<GetWorkoutPlansByDateDto>()
+            {
+                Success = true,
+                Message = "Workout plan updated successfully.",
+                StatusCode = HttpStatusCode.OK,
+                Data = new GetWorkoutPlansByDateDto
+                {
+                    Id = workoutPlan.Id,
+                    WorkoutId = workoutPlan.WorkoutId,
+                    Date = workoutPlan.Date,
+                    WorkoutName = _dbContext.WorkoutPrograms.FirstOrDefault(p => p.Id == workoutPlan.WorkoutId)?.WorkoutName,
+                    Status = workoutPlan.Status
+                }
+            };
+        }
+        catch (Exception exception)
+        {
+            _logger.LogInformation($"\n------ {exception.Message} | {DateTime.Now} -------\n");
+            throw new FitByBitServiceUnavailableException($"{exception.Message}: service unavailable.", HttpStatusCode.InternalServerError.ToString());
+        }
+    }
+
+    public async Task<GenericResponse<IEnumerable<AllWorkoustDto>>> GetAllWorkouts()
+    {
+        try
+        {
+            // Fetch all workouts from the database
+            var workouts = await _dbContext.WorkoutPrograms.ToListAsync();
+
+
+            // Extract distinct names from workouts
+            var workoutNames = workouts.Select(w => w.WorkoutName).ToList();
+
+            // Create a list to store AllWorkoutDto objects
+            var allWorkoutDtos = workoutNames.Select(workoutName => new AllWorkoustDto
+            {
+                WorkoutId = workouts.Where(w => w.WorkoutName == workoutName).Select(w => w.Id).Distinct().FirstOrDefault(),
+                WorkoutName = workoutName,
+                Category = workouts.Where(w => w.WorkoutName == workoutName).Select(w => w.Category).Distinct().FirstOrDefault(),
+                ExpertiseLevel = workouts.Where(w => w.WorkoutName == workoutName).Select(w => w.ExpertiseLevel).Distinct().FirstOrDefault()
+            }).ToList();
+
+            return new GenericResponse<IEnumerable<AllWorkoustDto>>()
+            {
+                Success = true,
+                Message = "Success",
+                Data = allWorkoutDtos,
+                StatusCode = HttpStatusCode.OK
+            };
+        }
+        catch (Exception exception)
+        {
+            _logger.LogInformation($"\n------ {exception.Message} | {_dateTime} -------\n");
+            throw new FitByBitServiceUnavailableException($"{exception.Message}: service unavailable.",
+                HttpStatusCode.InternalServerError.ToString());
+        }
+    }
+
 
     private List<Exercise> GetExercisesForWorkouts(List<string> exerciseNames)
     {
